@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* Styling for the page */
+    body {
+      background-color: #000000;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    /* Styling for the containers */
+    .container-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 20px;
+    }
+
+    .container {
+      width: 200px;
+      height: 300px;
+      border: 10px solid;
+      border-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1;
+      border-image-slice: 1;
+      padding: 10px;
+      background-color: #e9ecef;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: rainbow-border 5s linear infinite;
+    }
+
+    /* Animation for the rainbow border */
+    @keyframes rainbow-border {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* Styling for the draggable items */
+    .item {
+      width: 80px;
+      height: 80px;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      cursor: move;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      color: #555;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .item:hover {
+      background-color: gold;
+    }
+
+    /* Styling for the success state */
+    .success {
+      background-color: #c1e9c1;
+      color: #155724;
+      border-color: #b1d9b1;
+    }
+
+    /* Styling for the reset button */
+    .reset-btn {
+      display: block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: #fff;
+      border-color: gold;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .reset-btn:hover {
+      background-color: #b30000;
+    }
+
+    /* Media Queries */
+    @media screen and (max-width: 768px) {
+      .container-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        margin-top: 20px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        width: 160px;
+        height: 240px;
+        padding: 5px;
+      }
+
+      .item {
+        width: 60px;
+        height: 60px;
+      }
+
+      .reset-btn {
+        font-size: 14px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Containers for the drag and drop functionality -->
+  <div class="container-wrapper">
+    <div class="container" id="container1">
+      <!-- Draggable items in the first container -->
+      <div class="item" draggable="true">Cold❄️</div>
+      <div class="item" draggable="true">Rainy🌧️</div>
+      <div class="item" draggable="true">Cloudy😶‍🌫️</div>
+      <div class="item" draggable="true">Sunny🌞</div>
+    </div>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+    <!-- Second container for dropping items -->
+    <div class="container" id="container2"></div>
+  </div>
+
+  <!-- Reset button to clear the second container -->
+  <button class="reset-btn" onclick="resetContainers()">Reset</button>
+
+  <script>
+    // Selecting the draggable items and the second container
+    const items = document.querySelectorAll('.item');
+    const container2 = document.getElementById('container2');
+
+    // Adding event listeners for drag events on the items
+    items.forEach(item => {
+      item.addEventListener('dragstart', dragStart);
+      item.addEventListener('dragend', dragEnd);
+    });
+
+    // Adding event listeners for drag events on the second container
+    container2.addEventListener('dragover', dragOver);
+    container2.addEventListener('dragenter', dragEnter);
+    container2.addEventListener('dragleave', dragLeave);
+    container2.addEventListener('drop', dragDrop);
+
+    // Function to add 'dragging' class when dragging starts
+    function dragStart() {
+      this.classList.add('dragging');
+    }
+
+    // Function to remove 'dragging' class when dragging ends
+    function dragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    // Function to prevent default behavior during drag over
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    // Function to highlight the container during drag enter
+    function dragEnter(e) {
+      e.preventDefault();
+      this.classList.add('highlight');
+    }
+
+    // Function to remove the highlight from the container during drag leave
+    function dragLeave() {
+      this.classList.remove('highlight');
+    }
+
+    // Function to handle item drop into the second container
+    function dragDrop() {
+      this.classList.remove('highlight');
+      const draggedItem = document.querySelector('.dragging');
+      this.appendChild(draggedItem);
+      draggedItem.classList.add('success');
+      draggedItem.draggable = false;
+    }
+
+    // Function to reset the containers and items
+    function resetContainers() {
+      container2.innerHTML = '';
+      items.forEach(item => {
+        item.classList.remove('success');
+        item.draggable = true;
+        document.getElementById('container1').appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
